@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/screens/home_screen.dart';
+import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
+import 'package:movies_app/up_date_profile/up_date_profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'onboarding/onboarding_screen.dart';
 
@@ -24,6 +26,8 @@ class MovieApp extends StatelessWidget {
       routes: {
         OnboardingScreen.routeName: (context) => OnboardingScreen(),
         HomeScreen.routeName: (context) => HomeScreen(),
+        UpDateProfileScreen.routeName: (context) =>UpDateProfileScreen(),
+        ForgetPasswordScreen.routeName: (context) =>ForgetPasswordScreen(),
       },
     );
   }
