@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/home_screen.dart';
+
+import '../login_scanner.dart';
 import 'onboarding_content.dart';
 import 'onboarding_data.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  static const routeName = '/onboarding';
+  static const String routeName = '/onboarding';
+
+  const OnboardingScreen({super.key});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -17,8 +20,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void initState() {
-    _controller = PageController();
     super.initState();
+    _controller = PageController();
   }
 
   @override
@@ -46,9 +49,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _completeOnboarding() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("onboarding_completed", true);
-    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    SharedPreferences prefs =
+    await SharedPreferences.getInstance();
+
+    await prefs.setBool(
+      "onboarding_completed",
+      true,
+    );
+
+    Navigator.pushReplacementNamed(
+      context,
+      LoginScaner.routeName,
+    );
   }
 
   @override
@@ -57,7 +69,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: PageView.builder(
         controller: _controller,
         onPageChanged: (index) {
-          setState(() => currentPage = index);
+          setState(() {
+            currentPage = index;
+          });
         },
         itemCount: pages_data.length,
         itemBuilder: (context, index) {

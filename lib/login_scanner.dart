@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-
-
-
-
+import 'home_screen.dart';
+import 'resgister_scanner.dart';
 
 class LoginScaner extends StatefulWidget {
+  static const String routeName = '/login';
+
   const LoginScaner({super.key});
 
   @override
   State<LoginScaner> createState() => _LoginScanerState();
+
 }
 
 class _LoginScanerState extends State<LoginScaner> {
@@ -81,11 +82,19 @@ class _LoginScanerState extends State<LoginScaner> {
                    backgroundColor: Color(0xffF6BD00),
                   side: BorderSide()
                 ),
-                onPressed: () {}, child: Text("Login",style: TextStyle(
-                  color: Colors.black
+                onPressed: () {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    HomeScreen.routeName,
+                  );
+                },
+                child: Text(
+                  "Login",
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
                 ),
-                
-                )),
+              ),
             ),
             SizedBox(height: 16,),
             Row(
@@ -93,17 +102,23 @@ class _LoginScanerState extends State<LoginScaner> {
               children: [
                 Text(
                   "Don`t Have Account ?  ",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
                 InkWell(
-//                   onTap: () {
-//                     Navigator.of(context).push(MaterialPageRoute<void>(
-//       builder: (BuildContext context) => RegisterScaner(),
-//     ),
-//   );
-//                   },
-                  child: Text(" Create One", style: TextStyle(color: Color(0xffF6BD00)
-                  )),
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      RegisterScaner.routeName,
+                    );
+                  },
+                  child: Text(
+                    " Create One",
+                    style: TextStyle(
+                      color: Color(0xffF6BD00),
+                    ),
+                  ),
                 ),
               ],
             ),
