@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/login_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/home_screen.dart';
 import 'onboarding_content.dart';
@@ -48,7 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _completeOnboarding() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool("onboarding_completed", true);
-    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    Navigator.pushReplacementNamed(context, LoginScaner.routeName);
   }
 
   @override
