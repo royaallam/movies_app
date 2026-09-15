@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class LoginScaner extends StatefulWidget {
   const LoginScaner({super.key});
+  static const String routeName = '/login';
 
   @override
   State<LoginScaner> createState() => _LoginScanerState();
