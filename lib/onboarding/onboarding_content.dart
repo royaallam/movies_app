@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import '../core/app_colors.dart';
+import 'package:movies_app/core/app_colors.dart';
 
 class OnboardingContent extends StatelessWidget {
-  String image;
-  String title;
-  String desc;
-  bool isFirst;
-  bool isLast;
-  VoidCallback onNext;
-  VoidCallback onBack;
+  final String image;
+  final String title;
+  final String desc;
+  final bool isFirst;
+  final bool isLast;
+  final int currentPage;
+  final VoidCallback onNext;
+  final VoidCallback onBack;
 
-  OnboardingContent({
+  const OnboardingContent({
+    super.key,
     required this.image,
     required this.title,
     required this.desc,
     required this.isFirst,
     required this.isLast,
+    required this.currentPage,
     required this.onNext,
     required this.onBack,
   });
@@ -25,107 +28,102 @@ class OnboardingContent extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.asset(image, fit: BoxFit.cover),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.transparent,
-                AppColors.black.withValues(alpha: 0.85),
-                AppColors.black,
-              ],
-              stops: [0.4, 0.65, 1.0],
+        Image.asset(
+          image,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => Container(
+            color: AppColors.black,
+            child: const Center(
+              child: Icon(Icons.broken_image, size: 100, color: Colors.grey),
             ),
           ),
         ),
-
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            width: double.infinity,
-            padding: isFirst
-                ? EdgeInsets.fromLTRB(20, 0, 20, 30)
-                : EdgeInsets.all(20),
-
-            decoration: isFirst
-                ? null
-                : BoxDecoration(
-              color: AppColors.black,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
-              ),
-            ),
+        Container(
+          color: Colors.black.withValues(alpha: 0.4),
+        ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
                   title,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.white,
+                  style: TextStyle(
+                    color: AppColors.whitecolor,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    fontSize: isFirst ? 36 : 24,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: isLast ? 0 : 16),
+                const SizedBox(height: 16),
                 Text(
                   desc,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.white,
-                    fontSize: 20,
+                  style: TextStyle(
+                    color: AppColors.whitecolor,
+                    fontSize: 16,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: isLast ? 0 : 20),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (!isFirst)
+                      TextButton(
+                        onPressed: onBack,
+                        child: Text(
+                          'Back',
+                          style: TextStyle(
+                            color: AppColors.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 SizedBox(
                   width: double.infinity,
+                  height: 55,
                   child: ElevatedButton(
+                    onPressed: onNext,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: AppColors.black,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: AppColors.orangecolor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    onPressed: onNext,
                     child: Text(
-                      isFirst ? "Explore Now" : (isLast ? "Finish" : "Next"),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      isLast ? 'Get Started' : 'Next',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-
-                if (!isFirst) ...[
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: AppColors.primaryColor),
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      onPressed: onBack,
-                      child: Text(
-                        "Back",
-                        style: TextStyle(
-                          color: AppColors.primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    5,
+                    (index) => Container(
+                      width: index == currentPage ? 20 : 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: index == currentPage
+                            ? AppColors.orangecolor
+                            : Colors.grey,
+                        borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                   ),
-                ],
+                ),
               ],
             ),
           ),
-
         ),
       ],
     );

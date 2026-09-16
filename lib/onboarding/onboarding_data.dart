@@ -1,6 +1,6 @@
-import '../core/app_assets.dart';
+import 'package:movies_app/core/app_assets.dart';
 
-final List<Map<String, String>> pages_data = [
+final List<Map<String, String>> pagesData = [
   {
     "image": AppAssets.introPageOnboarding,
     "title": "Find Your Next Favorite Movie Here",
@@ -29,5 +29,6 @@ final List<Map<String, String>> pages_data = [
   {
     "image": AppAssets.fifthPageOnboarding,
     "title": "Start Watching Now",
-  }
+    "desc": "",
+  },
 ];
