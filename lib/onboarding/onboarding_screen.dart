@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:movies_app/login_scanner.dart';
-import 'package:movies_app/onboarding/onboarding_content.dart';
-import 'package:movies_app/onboarding/onboarding_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/home_screen.dart';
+import 'onboarding_content.dart';
+import 'onboarding_data.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  static const String routeName = '/onboarding';
-
-  const OnboardingScreen({super.key});
+  static const routeName = '/onboarding';
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  late final PageController _controller;
+  late PageController _controller;
   int currentPage = 0;
 
   @override
   void initState() {
-    super.initState();
     _controller = PageController();
+    super.initState();
   }
 
   @override
@@ -29,32 +28,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  Future<void> _completeOnboarding() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboarding_completed', true);
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, LoginScaner.routeName);
-    }
-  }
-
   void _nextPage() {
-    if (currentPage < pagesData.length - 1) {
+    if (currentPage == pages_data.length - 1) {
+      _completeOnboarding();
+    } else {
       _controller.nextPage(
         duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+        curve: Curves.easeInOut,
       );
-    } else {
-      _completeOnboarding();
     }
   }
 
   void _previousPage() {
-    if (currentPage > 0) {
-      _controller.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
-    }
+    _controller.previousPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  Future<void> _completeOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("onboarding_completed", true);
+    Navigator.pushReplacementNamed(context, LoginScaner.routeName);
   }
 
   @override
@@ -63,21 +58,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: PageView.builder(
         controller: _controller,
         onPageChanged: (index) {
-          if (mounted) {
-            setState(() {
-              currentPage = index;
-            });
-          }
+          setState(() => currentPage = index);
         },
-        itemCount: pagesData.length,
+        itemCount: pages_data.length,
         itemBuilder: (context, index) {
           return OnboardingContent(
-            image: pagesData[index]["image"]!,
-            title: pagesData[index]["title"]!,
-            desc: pagesData[index]["desc"] ?? "",
+            image: pages_data[index]["image"]!,
+            title: pages_data[index]["title"]!,
+            desc: pages_data[index]["desc"] ?? "",
             isFirst: index == 0,
-            isLast: index == pagesData.length - 1,
-            currentPage: currentPage,
+            isLast: index == pages_data.length - 1,
             onNext: _nextPage,
             onBack: _previousPage,
           );
