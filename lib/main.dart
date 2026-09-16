@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies_app/firebase_options.dart';
 import 'package:movies_app/login_scanner.dart';
 import 'package:movies_app/screens/home_screen.dart';
 import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
@@ -10,7 +12,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool onboardingCompleted = prefs.getBool("onboarding_completed") ?? false;
-
+await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(MovieApp(onboardingCompleted: onboardingCompleted));
 }
 
@@ -23,13 +27,13 @@ class MovieApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute:
-      onboardingCompleted ? HomeScreen.routeName : OnboardingScreen.routeName,
+      onboardingCompleted ? LoginScaner.routeName : OnboardingScreen.routeName,
       routes: {
         OnboardingScreen.routeName: (context) => OnboardingScreen(),
         LoginScaner.routeName:(context) => LoginScaner(),
-        HomeScreen.routeName: (context) => HomeScreen(),
-        UpDateProfileScreen.routeName: (context) =>UpDateProfileScreen(),
-        ForgetPasswordScreen.routeName: (context) =>ForgetPasswordScreen(),
+       // HomeScreen.routeName: (context) => HomeScreen(),
+       // UpDateProfileScreen.routeName: (context) =>UpDateProfileScreen(),
+        //ForgetPasswordScreen.routeName: (context) =>ForgetPasswordScreen(),
       },
     );
   }
