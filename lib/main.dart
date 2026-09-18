@@ -2,9 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:movies_app/firebase_options.dart';
+import 'package:movies_app/login/login_scanner.dart';
+import 'package:movies_app/register/resgister_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:movies_app/login_scanner.dart';
-import 'package:movies_app/resgister_scanner.dart';
 import 'package:movies_app/onboarding/onboarding_screen.dart';
 import 'package:movies_app/screens/home_screen.dart';
 import 'package:movies_app/movie_details_screen.dart';
@@ -17,21 +17,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-
   bool onboardingCompleted = prefs.getBool("onboarding_completed") ?? false;
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   await GoogleSignIn.instance.initialize(
-  serverClientId: '791043766824-cf7ft76lajj70cgri7fng4tba6ip9v8c.apps.googleusercontent.com',
-);
+    serverClientId: '791043766824-cf7ft76lajj70cgri7fng4tba6ip9v8c.apps.googleusercontent.com',
+  );
 
   runApp(MovieApp(onboardingCompleted: onboardingCompleted));
 }
 
 class MovieApp extends StatelessWidget {
   final bool onboardingCompleted;
-
   const MovieApp({super.key, required this.onboardingCompleted});
 
   @override
@@ -42,12 +42,9 @@ class MovieApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF181818),
       ),
-      initialRoute: onboardingCompleted ? '/login' : OnboardingScreen.routeName,
+      initialRoute: onboardingCompleted ? LoginScaner.routeName : OnboardingScreen.routeName,
       routes: {
-        OnboardingScreen.routeName: (context) => const OnboardingScreen(),
-        LoginScaner.routeName: (context) =>  LoginScaner(),
-        RegisterScaner.routeName: (context) =>  RegisterScaner(),
-        OnboardingScreen.routeName: (context) => OnboardingScreen(),
+        OnboardingScreen.routeName: (context) =>  OnboardingScreen(),
         LoginScaner.routeName: (context) => const LoginScaner(),
         RegisterScaner.routeName: (context) => const RegisterScaner(),
         HomeScreen.routeName: (context) => const HomeScreen(),
