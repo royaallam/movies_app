@@ -1,147 +1,225 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/core/app_colors.dart';
-import 'package:movies_app/app_widgets.dart';
-import 'package:movies_app/search_screen.dart';
-import 'package:movies_app/up_date_profile/up_date_profile_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+import 'app_widgets.dart';
+import 'movie_details_screen.dart';
+
+class HomeScreen extends StatelessWidget {
   static const String routeName = '/home';
 
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int currentIndex = 0;
-
-  final List<Widget> _pages = [
-    const _HomeContent(),
-    const SearchScreen(),
-    const Center(child: Text('Browse')),
-    const UpDateProfileScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
-      body: _pages[currentIndex],
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: currentIndex,
-        onTap: _onItemTapped,
+      backgroundColor: bg,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: _availableMovies(context),
+            ),
+
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  16,
+                  4,
+                  16,
+                  8,
+                ),
+                child: Image.asset(
+                  'assets/images/watch_now.png',
+                  width: 267,
+                  height: 93,
+                  alignment: Alignment.centerLeft,
+                ),
+              ),
+            ),
+
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                16,
+                0,
+                16,
+                20,
+              ),
+              sliver: SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                    return movieCard(
+                      movies[index],
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          MovieDetailsScreen.routeName,
+                        );
+                      },
+                    );
+                  },
+                  childCount: 6,
+                ),
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 14,
+                  childAspectRatio: 0.68,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      bottomNavigationBar: const BottomBar(
+        currentIndex: 0,
       ),
     );
   }
-}
 
-class _HomeContent extends StatelessWidget {
-  const _HomeContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: _buildAvailableMovies(context),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-            child: Text(
-              'Recommended Movies',
-              style: TextStyle(
-                color: AppColors.whitecolor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: movies.length,
-              itemBuilder: (context, index) {
-                return MovieCard(
-                  movie: movies[index],
-                  onTap: () {
-                    Navigator.pushNamed(context, '/movie-details');
-                  },
-                  isSmall: true,
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAvailableMovies(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _availableMovies(BuildContext context) {
+    return SizedBox(
+      height: 365,
+      child: Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Available Now',
-                style: TextStyle(color: AppColors.whitecolor, fontSize: 14),
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.20,
+              child: Image.asset(
+                'assets/images/1917.png',
+                fit: BoxFit.cover,
               ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: 200,
-                height: 280,
-                child: MovieCard(movie: movies[0]),
-              ),
-            ],
+            ),
           ),
-          SizedBox(
-            width: 200,
-            height: 280,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: MovieCard(movie: movies[1]),
+
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.10),
+                    bg.withOpacity(0.95),
+                  ],
                 ),
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/movie-details');
-                    },
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: yellow,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.play_arrow, color: Colors.black, size: 31),
-                    ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 8,
+            left: 16,
+            child: Image.asset(
+              'assets/images/available_now.png',
+              width: 85,
+              height: 37,
+            ),
+          ),
+
+          Positioned(
+            top: 55,
+            left: 0,
+            right: 0,
+            child: SizedBox(
+              height: 255,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _sideMovie(movies[1]),
+
+                  const SizedBox(width: 10),
+
+                  _mainMovie(
+                    context,
+                    movies[0],
                   ),
-                ),
-              ],
+
+                  const SizedBox(width: 10),
+
+                  _sideMovie(movies[2]),
+                ],
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _sideMovie(Movie movie) {
+    return SizedBox(
+      width: 65,
+      height: 215,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Opacity(
+          opacity: 0.65,
+          child: Image.asset(
+            movie.image,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mainMovie(
+      BuildContext context,
+      Movie movie,
+      ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          MovieDetailsScreen.routeName,
+        );
+      },
+      child: SizedBox(
+        width: 155,
+        height: 255,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(7),
+              child: Image.asset(
+                movie.image,
+                width: 155,
+                height: 235,
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            Container(
+              width: 48,
+              height: 48,
+              decoration: const BoxDecoration(
+                color: yellow,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.play_arrow,
+                color: Colors.black,
+                size: 31,
+              ),
+            ),
+
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Text(
+                movie.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
