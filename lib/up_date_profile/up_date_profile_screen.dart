@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movies_app/core/app_colors.dart';
 import 'package:movies_app/core/app_strings.dart';
 import 'package:movies_app/core/app_assets.dart';
-import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
+import 'package:movies_app/up_date_profile/forgot_password_screen.dart';
 import 'package:movies_app/up_date_profile/avatar_screen.dart';
 
 class UpDateProfileScreen extends StatefulWidget {

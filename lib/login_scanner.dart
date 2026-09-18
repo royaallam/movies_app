@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movies_app/resgister_scanner.dart';
 import 'package:movies_app/screens/home_screen.dart';
-import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
+
+import 'package:movies_app/up_date_profile/forgot_password_screen.dart';
 
 
 class LoginScaner extends StatefulWidget {
