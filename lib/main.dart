@@ -35,6 +35,9 @@ class MovieApp extends StatelessWidget {
       ),
       initialRoute: onboardingCompleted ? '/login' : OnboardingScreen.routeName,
       routes: {
+        OnboardingScreen.routeName: (context) => const OnboardingScreen(),
+        LoginScaner.routeName: (context) =>  LoginScaner(),
+        RegisterScaner.routeName: (context) =>  RegisterScaner(),
         OnboardingScreen.routeName: (context) => OnboardingScreen(),
         LoginScaner.routeName: (context) => const LoginScaner(),
         RegisterScaner.routeName: (context) => const RegisterScaner(),
