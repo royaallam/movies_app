@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/core/app_colors.dart';
-import 'package:movies_app/app_widgets.dart';
+import 'app_widgets.dart';
 
 class SearchResultsScreen extends StatelessWidget {
   static const String routeName = '/search-results';
@@ -9,35 +8,55 @@ class SearchResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String searchQuery = ModalRoute.of(context)!.settings.arguments as String? ?? '';
-
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: bg,
       appBar: AppBar(
-        backgroundColor: AppColors.black,
+        backgroundColor: bg,
         elevation: 0,
-        title: Text(
-          'Search Results for "$searchQuery"',
-          style: TextStyle(color: AppColors.whitecolor),
+        titleSpacing: 16,
+        title: TextField(
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: 'Search',
+            filled: true,
+            fillColor: card,
+            prefixIcon: const Icon(Icons.search),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
         ),
       ),
       body: GridView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-        itemCount: movies.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.fromLTRB(
+          16,
+          8,
+          16,
+          20,
+        ),
+        itemCount: 6,
+        gridDelegate:
+        const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 12,
           mainAxisSpacing: 14,
           childAspectRatio: 0.68,
         ),
         itemBuilder: (context, index) {
-          return MovieCard(
-            movie: movies[index],
+          return movieCard(
+            movies[index],
             onTap: () {
-              Navigator.pushNamed(context, '/movie-details');
+              Navigator.pushNamed(
+                context,
+                '/movie-details',
+              );
             },
           );
         },
+      ),
+      bottomNavigationBar: const BottomBar(
+        currentIndex: 1,
       ),
     );
   }
