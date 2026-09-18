@@ -1,4 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies_app/firebase_options.dart';
+import 'package:movies_app/up_date_profile/forgot_password_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:movies_app/login_scanner.dart';
 import 'package:movies_app/resgister_scanner.dart';
@@ -8,11 +11,13 @@ import 'package:movies_app/movie_details_screen.dart';
 import 'package:movies_app/search_screen.dart';
 import 'package:movies_app/search_results_screen.dart';
 import 'package:movies_app/up_date_profile/up_date_profile_screen.dart';
-import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   bool onboardingCompleted = prefs.getBool("onboarding_completed") ?? false;
@@ -48,3 +53,5 @@ class MovieApp extends StatelessWidget {
     );
   }
 }
+
+
