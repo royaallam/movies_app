@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -73,17 +72,17 @@ class _RegisterScanerState extends State<RegisterScaner> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Image.asset(
-                      "assets/images/logo.png",
+                      "assets/images/1781d833130f2d6e86fdf74b18fe8f84e378b3a2.png",
                       width: 94,
                       height: 94,
                     ),
                     Image.asset(
-                      "assets/images/logo.png",
+                      "assets/images/0ecb0264ed6bae405d7a1f06d2b702842000ca23.png",
                       width: 158,
                       height: 161,
                     ),
                     Image.asset(
-                      "assets/images/logo.png",
+                      "assets/images/22b644fc9582b0f4009d71c4fba3af8de2d76fa5.png",
                       width: 94,
                       height: 94,
                     ),
@@ -182,12 +181,19 @@ class _RegisterScanerState extends State<RegisterScaner> {
                         filled: true,
                         fillColor: Color(0xff282A28),
                         hintText: "Password ",
-                        suffixIcon: Icon(
+                        suffixIcon: IconButton(
+                        icon: Icon(
                           isPasswordVisible
-                          ?Icons.visibility:Icons.visibility,
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.white,
                         ),
-
+                        onPressed: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
+                        ),
                         prefixIcon: Icon(Icons.email, color: Colors.white),
                         hintStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
@@ -222,10 +228,18 @@ class _RegisterScanerState extends State<RegisterScaner> {
                         filled: true,
                         fillColor: Color(0xff282A28),
                         hintText: "Confim Password ",
-                        suffixIcon: Icon(
+                        suffixIcon: IconButton(
+                        icon: Icon(
                           isPasswordVisible
-                          ?Icons.visibility:Icons.visibility,
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
                         ),
                         prefixIcon: Icon(Icons.email, color: Colors.white),
                         hintStyle: TextStyle(color: Colors.white),
@@ -260,10 +274,6 @@ class _RegisterScanerState extends State<RegisterScaner> {
                         filled: true,
                         fillColor: Color(0xff282A28),
                         hintText: "Phone Number",
-                        suffixIcon: Icon(
-                          Icons.visibility_off,
-                          color: Colors.white,
-                        ),
                         prefixIcon: Icon(Icons.call, color: Colors.white),
                         hintStyle: TextStyle(color: Colors.white),
                         enabledBorder: OutlineInputBorder(
@@ -389,3 +399,4 @@ Widget _buildCircleFlag(String assetPath) {
     ),
   );
 }
+

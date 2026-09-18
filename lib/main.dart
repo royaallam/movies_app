@@ -1,4 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:movies_app/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:movies_app/login_scanner.dart';
 import 'package:movies_app/resgister_scanner.dart';
@@ -16,6 +19,12 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   bool onboardingCompleted = prefs.getBool("onboarding_completed") ?? false;
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await GoogleSignIn.instance.initialize(
+  serverClientId: '791043766824-cf7ft76lajj70cgri7fng4tba6ip9v8c.apps.googleusercontent.com',
+);
 
   runApp(MovieApp(onboardingCompleted: onboardingCompleted));
 }

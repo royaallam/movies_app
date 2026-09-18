@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:movies_app/resgister_scanner.dart';
 import 'package:movies_app/screens/home_screen.dart';
 import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
+// final login
 
 class LoginScaner extends StatefulWidget {
   static const String routeName = '/login';
 
-// edit
   @override
   State<LoginScaner> createState() => _LoginScanerState();
 }
@@ -62,6 +64,25 @@ class _LoginScanerState extends State<LoginScaner> {
       print("Firebase Message: ${e.message}");
     }
   }
+  Future<void> signInWithGoogle() async {
+  try {
+    final GoogleSignInAccount googleUser =
+        await GoogleSignIn.instance.authenticate();
+
+    final GoogleSignInAuthentication googleAuth =
+        googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+    );
+
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    print('تم تسجيل الدخول بنجاح');
+  } catch (e) {
+    print('خطأ Google Sign In: $e');
+  }
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -162,14 +183,14 @@ class _LoginScanerState extends State<LoginScaner> {
             SizedBox(height: 16),
             Container(
               alignment: Alignment.bottomRight,
-              child:
-               InkWell(
-                                  onTap: () {
-                                      Navigator.of(context).push(MaterialPageRoute<void>(
-                        builder: (BuildContext context) => ForgetPasswordScreen(),
-                      ),
-                    );
-                                    },
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => ForgetPasswordScreen(),
+                    ),
+                  );
+                },
                 child: Text(
                   "Forget Password ?",
                   style: TextStyle(color: Color(0xffF6BD00)),
@@ -200,12 +221,13 @@ class _LoginScanerState extends State<LoginScaner> {
                   style: TextStyle(color: Colors.white),
                 ),
                 InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(MaterialPageRoute<void>(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
                         builder: (BuildContext context) => RegisterScaner(),
                       ),
                     );
-                                    },
+                  },
                   child: Text(
                     " Create One",
                     style: TextStyle(color: Color(0xffF6BD00)),
@@ -224,13 +246,30 @@ class _LoginScanerState extends State<LoginScaner> {
               height: 56,
               width: 392,
               child: ElevatedButton(
-                onPressed: () {},
+                
+                   onPressed: () async{
+                        await signInWithGoogle();
+                      },
+                
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xffF6BD00),
                 ),
-                child: Text(
-                  "Login With Google ",
-                  style: TextStyle(color: Colors.black),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/icons/icon_google.svg",
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.fill,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      "Login With Google",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -290,18 +329,16 @@ class _LoginScanerState extends State<LoginScaner> {
   }
 }
 
-  Widget _buildCircleFlag(String assetPath) {
-    return Container(
-      width: 58,
-      height: 58,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Image.asset(
-        assetPath,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag),
-      ),
-    );
-  }
+Widget _buildCircleFlag(String assetPath) {
+  return Container(
+    width: 58,
+    height: 58,
+    decoration: const BoxDecoration(shape: BoxShape.circle),
+    clipBehavior: Clip.antiAlias,
+    child: Image.asset(
+      assetPath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag),
+    ),
+  );
+}
