@@ -3,12 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:movies_app/login_scanner.dart';
 import 'package:movies_app/resgister_scanner.dart';
 import 'package:movies_app/onboarding/onboarding_screen.dart';
-import 'package:movies_app/screens/home_screen.dart';
 import 'package:movies_app/movie_details_screen.dart';
 import 'package:movies_app/search_screen.dart';
 import 'package:movies_app/search_results_screen.dart';
 import 'package:movies_app/up_date_profile/up_date_profile_screen.dart';
 import 'package:movies_app/up_date_profile/fordot_password_screen.dart';
+import 'home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

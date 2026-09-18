@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/core/app_colors.dart';
-import 'package:movies_app/app_widgets.dart';
-import 'package:movies_app/search_screen.dart';
-import 'package:movies_app/up_date_profile/up_date_profile_screen.dart';
+import '../movie.dart';
+import '../movie_card.dart';
+import '../movie_service.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
@@ -14,134 +13,185 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentIndex = 0;
+  final MovieService _movieService = MovieService();
+  int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const _HomeContent(),
-    const SearchScreen(),
-    const Center(child: Text('Browse')),
-    const UpDateProfileScreen(),
-  ];
+  final List<String> _genres = ['action', 'comedy', 'drama'];
 
-  void _onItemTapped(int index) {
+  List<Movie> _availableMovies = [];
+  Map<String, List<Movie>> _genreMovies = {};
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAllData();
+  }
+  void _loadAllData() async {
+    final available = await _movieService.fetchMovies(limit: 10, sortBy: 'download_count');
+    final genres = await _movieService.fetchMoviesByGenres(genres: _genres, limitPerGenre: 8);
+
     setState(() {
-      currentIndex = index;
+      _availableMovies = available;
+      _genreMovies = genres;
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
-      body: _pages[currentIndex],
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: currentIndex,
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-}
-
-class _HomeContent extends StatelessWidget {
-  const _HomeContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: _buildAvailableMovies(context),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-            child: Text(
-              'Recommended Movies',
-              style: TextStyle(
-                color: AppColors.whitecolor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: movies.length,
-              itemBuilder: (context, index) {
-                return MovieCard(
-                  movie: movies[index],
-                  onTap: () {
-                    Navigator.pushNamed(context, '/movie-details');
-                  },
-                  isSmall: true,
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAvailableMovies(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
+      backgroundColor: const Color(0xFF111111),
+      body: SafeArea(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+            : SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Available Now',
-                style: TextStyle(color: AppColors.whitecolor, fontSize: 14),
-              ),
-              const SizedBox(height: 8),
+
               SizedBox(
-                width: 200,
-                height: 280,
-                child: MovieCard(movie: movies[0]),
+                height: 380,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.2,
+                        child: Image.network(
+                          _availableMovies.first.coverImage,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.1),
+                              const Color(0xFF111111).withOpacity(0.8),
+                              const Color(0xFF111111),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 12),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 18),
+                          child: Text(
+                            'Available Now',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            itemCount: _availableMovies.length,
+                            itemBuilder: (context, index) {
+                              return MovieCard(
+                                movie: _availableMovies[index],
+                                isLarge: true,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+
+              const SizedBox(height: 20),
+
+              ..._genreMovies.entries.map((entry) {
+                final genreName = entry.key;
+                final movies = entry.value;
+
+                if (movies.isEmpty) return const SizedBox.shrink();
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: Text(
+                          genreName[0].toUpperCase() + genreName.substring(1),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 190,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          itemCount: movies.length,
+                          itemBuilder: (context, index) {
+                            return MovieCard(
+                              movie: movies[index],
+                              genre: genreName,
+                              isLarge: false,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
             ],
           ),
-          SizedBox(
-            width: 200,
-            height: 280,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: MovieCard(movie: movies[1]),
-                ),
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/movie-details');
-                    },
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: yellow,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.play_arrow, color: Colors.black, size: 31),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
+      ),
+
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF292929),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          currentIndex: _currentIndex,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.amber,
+          unselectedItemColor: Colors.white70,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.search_rounded), label: 'Search'),
+            BottomNavigationBarItem(icon: Icon(Icons.play_circle_outline_rounded), label: 'Watch'),
+            BottomNavigationBarItem(icon: Icon(Icons.person_outline_rounded), label: 'Profile'),
+          ],
+        ),
       ),
     );
   }

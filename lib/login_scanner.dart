@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/core/app_colors.dart';
 import 'package:movies_app/resgister_scanner.dart';
-import 'package:movies_app/screens/home_screen.dart';
+import 'home_screen.dart';
 
 class LoginScaner extends StatefulWidget {
   static const String routeName = '/login';

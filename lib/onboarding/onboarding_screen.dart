@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/login_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/home_screen.dart';
 import 'onboarding_content.dart';
 import 'onboarding_data.dart';
 
